@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>./home_</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 400px;
+    }
+  </style>
+
+</head>
+
+<body
+  style="height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; font-family: Helvetica, Arial, sans-serif; margin: 0; background-image: url('https://images.unsplash.com/photo-1618278942403-e973260cc425?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-repeat: no-repeat; background-size: cover;">
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;">
+    <video id="videoElement" autoplay muted loop
+      style="position: absolute; top: 0; opacity: 0.5; left: 0; display: none; width: 100%; filter: brightness(100%) blur(4px) contrast(90%); height: 100%; z-index: -1; object-fit: cover;">
+      <source src="https://cloud-5si8ado6s-hack-club-bot.vercel.app/0capybara_showering_like_a_boss_-_luxury_shower.mp4"
+        type="video/mp4">
+    </video>
+  </div>
+  <div style="position: absolute; width: 100%; top: 0; display: flex; justify-content: space-between; z-index: 2000; align-items: center; background-color: #00000030; color: #fff
+    ; margin: 0; pointer-events: none;">
+    <p style="margin-left: 16px; font-weight: 600;">BenOS: ./home</p>
+    <div style="display: flex; flex-direction: row; align-items: center;">
+      <p onclick="toggleMusic()"
+        style="pointer-events: auto; cursor: pointer; padding: 4px 12px; background-color: rgba(255, 255, 255, 0.1); pointer; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.0); border: 1px solid transparent; transition: box-shadow 0.3s ease; border-radius: 16px;"
+        id="musicToggle" onmouseover="this.style.boxShadow = 'inset 0 0 0 1px rgba(255, 255, 255, 0.5)'"
+        onmouseout="this.style.boxShadow = 'none'">
+        Play Music
+      </p>
+
+
+      <p id="time" style="margin-right: 16px; margin-left: 16px">Time</p>
+    </div>
+
+  </div>
+  <div id="winowApplications"
+    style="height: calc(100% - 128px); width: 100%; z-index: 1; display: flex; padding: 16px; flex-direction: column;">
+    <div id="contactIcon" onclick="openIcon('contact')"
+      style="cursor: pointer; align-items: center; border-radius: 8px; width: fit-content; padding: 8px; display: flex; flex-direction: column;">
+      <img style="height: 64px; width: 64px;  border-radius: 16px; margin: 0px"
+        src="https://cdn.icon-icons.com/icons2/3053/PNG/512/contacts_macos_bigsur_icon_190274.png" />
+      <p style="margin: 0px; font-size: 12px; margin-top: 4px; font-weight: 500; color: #fff">Contact</p>
+    </div>
+    <div id="aboutMeIcon" onclick="openIcon('aboutMe')"
+      style="cursor: pointer; align-items: center; border-radius: 8px; width: fit-content; padding: 8px; display: flex; flex-direction: column;">
+      <img style="height: 64px; width: 64px;  border-radius: 16px; margin: 0px"
+        src="https://cdn.icon-icons.com/icons2/3053/PNG/512/notes_macos_bigsur_icon_189901.png" />
+      <p style="margin: 0px; font-size: 12px; margin-top: 4px; font-weight: 500; color: #fff">aboutMe.txt</p>
+    </div>
+
+    <div id="projectsIcon" onclick="openIcon('projects')"
+      style="cursor: pointer; align-items: center; border-radius: 8px; width: fit-content; padding: 8px; display: flex; flex-direction: column;">
+      <img style="height: 64px; width: 64px;  border-radius: 16px; margin: 0px"
+        src="https://cdn.icon-icons.com/icons2/2963/PNG/512/macos_big_sur_folder_icon_186046.png" /> 
+      <p style="margin: 0px; font-size: 12px; margin-top: 4px; font-weight: 500; color: #fff">Books</p>
+    </div>
+    <div id="mapsIcon" onclick="openIcon('maps')"
+      style="cursor: pointer; align-items: center; border-radius: 8px; width: fit-content; padding: 8px; display: flex; flex-direction: column;">
+      <img style="height: 64px; width: 64px;  border-radius: 16px; margin: 0px"
+        src="https://cdn.jim-nielsen.com/macos/512/maps-2021-05-25.png" />
+      <p style="margin: 0px; font-size: 12px; margin-top: 4px; font-weight: 500; color: #fff">Maps</p>
+    </div>
+    <div id="musicicon" onclick="openIcon('music')"
+      style="cursor: pointer; align-items: center; border-radius: 8px; width: fit-content; padding: 8px; display: flex; flex-direction: column;">
+      <img style="height: 52px; width: 52px;  border-radius: 16px; margin: 0px"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Apple_Music_icon.svg/361px-Apple_Music_icon.svg.png?20221219073958" />
+      <p style="margin: 0px; font-size: 12px; margin-top: 4px; font-weight: 500; color: #fff">Apple Music</p>
+    </div>
+  </div>
+  <!-- #start template -->
+  <!-- <div id="projects" onclick="tapWindow(document.getElementById('projects'))"
+    style="align-items: center; border: 1px solid black; border-radius: 16px; background-color: #fff; width: 500px; position: absolute; justify-content: center; flex-direction: column; display: none">
+    <div id="projectshandle"
+      style="display: flex; align-items: center; background-color: #F6F6F6; border-radius: 16px 16px 0px 0px; justify-content: space-between; width: 100%">
+      <div onclick="closeElement(document.getElementById('projects'))"
+        style="cursor: pointer; height: 16px; width: 16px; background-color: red; border-radius: 16px; margin-left: 16px">
+      </div>
+      <p>Template</p>
+      <div style="height: 16px; width: 16px; border-radius: 16px; margin-right: 16px"></div>
+    </div>
+    <div style="width: calc(100% - 32px);">
+      <p>Content</p>
+    </div>
+  </div> -->
+  <!-- stop -->
+
+  <div id="maps" onclick="tapWindow(document.getElementById('maps'))"
+    style="align-items: center; border: 1px solid black; border-radius: 16px; background-color: #fff; overflow: hidden; width: 750px; position: absolute; justify-content: center; flex-direction: column; display: none">
+    <div id="mapshandle"
+      style="display: flex; align-items: center; background-color: #F6F6F6; border-radius: 16px 16px 0px 0px; justify-content: space-between; width: 100%">
+      <div onclick="closeElement(document.getElementById('maps'))"
+        style="cursor: pointer; height: 16px; width: 16px; background-color: red; border-radius: 16px; margin-left: 16px">
+      </div>
+      <p>Maps</p>
+      <div style="height: 16px; width: 16px; border-radius: 16px; margin-right: 16px"></div>
+
+
+    </div>
+    <div style="width: 100%; height: 400px;">
+      <div id="map"></div>
+
+    </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+      // Initialize the map
+      var map = L.map('map').fitWorld().zoomIn(1);
+
+      // Add the tile layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      // Add a marker
+      function createCustomMarker(latitude, longitude, imageURL, caption) {
+        // Create a custom DivIcon
+        var customIcon = L.divIcon({
+          className: 'custom-marker-icon',
+          html: '<div style="position: relative;">' +
+            '<img style="height: 24px; width: 24px; border: 2px solid red; position: relative; border-radius: 16px; object-fit: cover;left: -4px; z-index: 1" src="' + imageURL + '" class="marker-image-bottom">' +
+            // '<img style="height: 48px; width: 48px; position: relative; bottom: 0; right: 16px;" src="https://cloud-jdx6xxsfn-hack-club-bot.vercel.app/0droppoint.png" class="marker-image">' +
+            '</div>'
+        });
+
+        // Create a marker with the custom icon
+        var marker = L.marker([latitude, longitude], {icon: customIcon});
+
+        // Create a custom popup
+        var popupContent = '<div style="text-align: center;">' +
+          '<img style="max-height: 126px; border-radius: 16px; object-fit: cover;" src="' + imageURL + '">' +
+          `<p style="margin: 2px 0; text-align: left;">${caption}</p>` +
+          '</div>';
+
+        // Bind the popup to the marker
+        marker.bindPopup(popupContent);
+
+        marker.addTo(map);
+
+      }
+
+      createCustomMarker(42.1676, -71.35784, 'https://www.minlib.net/sites/default/files/2018-09/Millis_0.jpg', 'The think tank! I do my thinking over here.');
+      createCustomMarker(42.2812, -71.1721, 'https://www.ll.mit.edu/sites/default/files/styles/hero_large_generic/public/page/image/2018-04/MITLL_265456-2C_0.jpg?h=85fbc767&itok=8nRy6XZi', 'The Lab, Going to Internationals!!');
+      createCustomMarker(42.3601, -71.0589, 'data:image/jpeg;base64,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', 'One of my favorite places to hang out, nice books stores and good food. ');
+
+      marker.addTo(map);
+    </script>
+  </div>
+
+  <div id="contact" onclick="tapWindow(document.getElementById('contact'))"
+    style="align-items: center; border: 1px solid black; border-radius: 16px; background-color: #fff; width: 500px; position: absolute; justify-content: center; flex-direction: column; display: none">
+    <div id="contacthandle"
+      style="display: flex; align-items: center; background-color: #F6F6F6; border-radius: 16px 16px 0px 0px; justify-content: space-between; width: 100%">
+      <div onclick="closeElement(document.getElementById('contact'))"
+        style="cursor: pointer; height: 16px; width: 16px; background-color: red; border-radius: 16px; margin-left: 16px">
+      </div>
+      <p>Message Ben</p>
+      <div style="height: 16px; width: 16px; border-radius: 16px; margin-right: 16px"></div>
+    </div>
+    <div style="width: calc(100% - 32px);">
+      <div id="chat">
+        <p class="thomas_message">
+          Hey there, welcome to
+          my inbox.</p>
+        
+        <p class="thomas_message">You used to be able to send texts here & they would ping on my phone instantly but twilio suspended my account for no reason.</p>
+        <p class="thomas_message">Feel free to send me an email at <a href="mailto: thomas@hackclub.com"
+            style="color: #CE41FF">
+          <a style="color: #CE41FF" href="mailto: Benvaccaro@proton.me">Benvaccaro@proton.me</a> 
+        </p>
+      </div>
+
+      <div
+        style="flex-direction: row; align-items: center; margin-bottom: 16px; justify-content: space-between; display: flex;">
+        <input type="text" id="messageInput" onchange="awaitingResponse = false"
+          style="padding: 6px 10px; width: calc(100%); border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none; vertical-align: middle;" />
+        <div
+          style="display: flex; align-items: center; justify-content: center; font-size: 14px; margin-left: 16px; outline: none;">
+          <p style="margin: 0; cursor: pointer; color: #CE41FF" onclick="sendMessage()">Send</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="projects" onclick="tapWindow(document.getElementById('projects'))"
+    style="align-items: center; border: 1px solid black; border-radius: 16px; background-color: #fff; width: 512px; position: absolute; justify-content: center; flex-direction: column; display: none">
+    <div id="projectshandle"
+      style="display: flex; align-items: center; background-color: #F6F6F6; border-radius: 16px 16px 0px 0px; justify-content: space-between; width: 100%">
+      <div onclick="closeElement(document.getElementById('projects'))"
+        style="cursor: pointer; height: 16px; width: 16px; background-color: red; border-radius: 16px; margin-left: 16px">
+      </div>
+      <p>Books</p>
+      
+      <style>
+      #gr_updates_widget{
+      border-radius: 5px;
+      background-color:#fff;
+      border:solid #683205 10px;
+      -webkit-box-shadow: 0px 0px 4px 1px #595959,
+      inset 0px 0px 0px 1px #7D730B;
+      -moz-box-shadow: 0px 0px 4px 1px #595959,
+      inset 0px 0px 0px 1px #7D730B;
+      box-shadow: 0px 0px 4px 1px #595959,
+      inset 0px 0px 0px 1px #7D730B;
+      padding:15px 0 35px 15px;
+      width:250px;
+      height:330px;
+      }
+      #gr_footer{
+      margin-bottom:10px;
+      }
+      #gr_updates_widget p{
+      padding:0px;
+      margin:0;
+      font-size:14px;
+      }
+      #gr_footer img{
+      width:100px;
+      float:left;
+      }
+      #gr_updates_widget img{
+        border-style:none;
+      } 
+      </style>
+        <div id="gr_updates_widget">
+          <iframe sandbox id="the_iframe" src="https://www.goodreads.com/widgets/user_update_widget?height=400&num_updates=3&user=163629877&width=250" width="248" height="330" frameborder="0"></iframe>
+          <div id="gr_footer">
+            <a href="https://www.goodreads.com/"><img alt="Goodreads: Book reviews, recommendations, and discussion" rel="nofollow" src="https://s.gr-assets.com/images/layout/goodreads_logo_140.png" /></a>
+          </div>
+        </div>
+
+      
+    </div>
+
+    <script>
+
+          divHeading.style.cssText = "display: flex; flex-direction: row; align-items: center; gap: 8px;";
+
+          divWrapper.style.cssText = "align-items: center; background-color: #F6F6F6; border-radius: 16px; margin-bottom: 16px; padding: 16px; display: flex; flex-direction: column;";
+          img.style.cssText = "height: 48px; width: 48px; border-radius: 16px; margin: 0px;";
+          p.style.cssText = "margin: 0px; padding: 0px; font-size: 16px; margin-top: 4px; font-weight: 500; color: #000;";
+          description.style.cssText = "margin-top: 8px; margin-bottom: 0px;";
+          linksContainer.style.cssText = "display: flex; gap: 8px; align-items: left; justify-content: start; width: 100%; margin-top: 8px;";
+
+          divIcon.id = icon.id;
+          img.src = icon.imgSrc;
+          p.textContent = icon.title;
+          description.textContent = icon.description;
+
+          divHeading.appendChild(img);
+          divHeading.appendChild(p);
+          divIcon.appendChild(divHeading);
+
+          divIcon.appendChild(description);
+
+          divWrapper.appendChild(divIcon);
+          divWrapper.appendChild(linksContainer); // Append links container to the wrapper
+
+          icon.links.forEach(link => {
+            const linkButton = document.createElement('a');
+            linkButton.href = link.url;
+            linkButton.textContent = link.title;
+            linkButton.style.cssText = "display: inline-block; padding: 6px 12px; background-color: #4E75FF; color: #fff; border-radius: 16px; text-decoration: none;";
+
+            linksContainer.appendChild(linkButton); // Append link button to the links container
+          });
+
+          iconContainer.appendChild(divWrapper);
+        });
+
+
+      </script>
+
+    </div>
+  </div>
+
+
+  <div id="aboutMe" onclick="tapWindow(document.getElementById('aboutMe'))"
+    style="align-items: center; border: 1px solid black; border-radius: 16px; background-color: #fff; width: 500px; position: absolute; justify-content: center; flex-direction: column; display: none">
+    <div id="aboutMehandle"
+      style="display: flex; align-items: center; background-color: #F6F6F6; border-radius: 16px 16px 0px 0px; justify-content: space-between; width: 100%">
+      <div onclick="closeElement(document.getElementById('aboutMe'))"
+        style="cursor: pointer; height: 16px; width: 16px; background-color: red; border-radius: 16px; margin-left: 16px">
+      </div>
+      <p>aboutMe.txt</p>
+      <div style="height: 16px; width: 16px; border-radius: 16px; margin-right: 16px"></div>
+    </div>
+    <div style="font-family: Courier; width: calc(100% - 32px);">
+
+
+      <p style="outline: none;" contenteditable="true">Hello world, 👋
+        </br>
+        </br>
+
+   <img style="height: 100px; width: 100px;" src="unnamed (2).jpg">
+        </br>
+        </br>
+
+        I am a <span id="age"></span> year old hacker helping engineer software for my studio & a creator of
+        many
+        side projects (many of which you'll find here).
+        </br>
+        </br>
+        I've neglected creating a personal website because I've found them to be mundane and self-obsessed. I am now
+        meeting a lot of people, so I
+        developed BenOS to provide a snapshot of "Who Ben Is" without feeling like an ad.
+        </br>
+        </br>
+        Explore the site to
+        get to know me a bit & let's chat
+        soon!
+
+      </p>
+    </div>
+  </div>
+  <div id="welcome" onclick="tapWindow(document.getElementById('welcome'))"
+    style="justify-content: center; align-items: center; display: flex; flex-direction: column; border: 1px solid black; padding: 16px; border-radius: 16px; background-color: #fff; position: absolute; z-index: 1;">
+    <div style="justify-content: start; display: flex; align-items: left; width: 100%">
+
+    </div>
+    <svg style="height: 96px; width: 96px; border-radius: 64px; object-fit: cover;" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Backstage</title><path d="M19.5188 9.3003a4.5194 4.5194 0 0 0 .7533-.5808 7.0485 7.0485 0 0 0 .1289-.1288 4.6555 4.6555 0 0 0 .4441-.5254 3.5672 3.5672 0 0 0 .354-.6032 2.721 2.721 0 0 0 .2436-.9185c.0835-1.086-.56-2.166-1.995-3.0369L13.6692 0 6.9335 6.454 2.548 10.6558l6.0826 3.6916a6.25 6.25 0 0 0 3.2351.919c1.3958 0 2.7333-.4928 3.7201-1.4388 1.0732-1.0283 1.4294-2.3591.7674-3.4653a2.7568 2.7568 0 0 0-.3809-.4968 4.9944 4.9944 0 0 0 1.0821.1204h.0084a4.7653 4.7653 0 0 0 1.7363-.3243 4.53 4.53 0 0 0 .7197-.3613Zm-5.6317 3.35c-1.0821 1.0367-2.8229 1.189-4.24.3304l-4.2085-2.5546 3.7779-3.6204 4.2796 2.5977c1.542.9348 1.4574 2.2247.391 3.2469zm.5001-4.6051-3.957-2.4023 3.6075-3.4585 3.8854 2.358c1.4529.8804 1.6416 2.0723.591 3.0805a3.3992 3.3992 0 0 1-4.1269.4223Zm1.6725 10.6418c-1.0961 1.0501-2.586 1.6293-4.194 1.6293a6.93 6.93 0 0 1-3.5902-1.0194L2.548 15.8238v1.3817l6.0826 3.6916a6.2506 6.2506 0 0 0 3.2351.9197c1.3958 0 2.7333-.4935 3.7201-1.439.7214-.691 1.1202-1.5195 1.1023-2.3237v-.1003a4.888 4.888 0 0 1-.6284.7354zm0-2.1844c-1.0961 1.0502-2.586 1.6287-4.194 1.6287a6.9345 6.9345 0 0 1-3.5902-1.0188L2.548 13.64v1.3824l6.0826 3.6915a6.2506 6.2506 0 0 0 3.2351.9197c1.3958 0 2.7333-.4934 3.7201-1.4389.7214-.6911 1.1202-1.5195 1.1023-2.3244v-.0997a4.888 4.888 0 0 1-.6284.7354zm0-2.1844c-1.0961 1.0508-2.586 1.6293-4.194 1.6293a6.9345 6.9345 0 0 1-3.5902-1.0188l-5.7275-3.472v1.3823l6.0826 3.6916a6.25 6.25 0 0 0 3.2351.9191c1.3958 0 2.7333-.4929 3.7201-1.4383.7214-.6917 1.1202-1.5195 1.1023-2.3244v-.102a4.8218 4.8218 0 0 1-.6284.7371zm4.688 1.4417a5.2733 5.2733 0 0 1-3.3718 1.4484v1.4988a4.5704 4.5704 0 0 0 2.898-1.253c.784-.7493 1.184-1.5743 1.1761-2.3882v-.1226a5.3164 5.3164 0 0 1-.7023.8205zm-4.688 5.1086c-1.0961 1.0508-2.586 1.6293-4.194 1.6293a6.93 6.93 0 0 1-3.5902-1.0193L2.548 18.007v1.3823l6.0826 3.691A6.2506 6.2506 0 0 0 11.8657 24c1.3958 0 2.7333-.4929 3.7201-1.4389.7214-.6911 1.1202-1.5195 1.1023-2.3238v-.1003a4.833 4.833 0 0 1-.6284.7354zM20.863 9.0987c-.038.0386-.0756.0773-.1148.1154a5.2856 5.2856 0 0 1-.596.4845 5.1165 5.1165 0 0 1-.6496.392 5.2946 5.2946 0 0 1-1.4697.4879 5.4716 5.4716 0 0 1-.7931.088 3.07 3.07 0 0 1 .07.2744 2.9836 2.9836 0 0 1 .0638.672v.5411h.0032a4.7277 4.7277 0 0 0 1.4198-.3108 4.5368 4.5368 0 0 0 1.478-.9421c.0449-.043.084-.0874.1267-.131a4.5972 4.5972 0 0 0 .4441-.5254 3.5712 3.5712 0 0 0 .354-.6016 2.7193 2.7193 0 0 0 .242-.9213c.0046-.0689.0111-.1384.0106-.2073v-.1131q-.0605.0863-.126.173a5.4178 5.4178 0 0 1-.4627.5243zm0 4.3643c-.0386.0392-.0733.079-.112.1176a5.276 5.276 0 0 1-3.3717 1.4484v1.4938a4.5704 4.5704 0 0 0 2.8979-1.253 4.1172 4.1172 0 0 0 .9219-1.2602 2.7198 2.7198 0 0 0 .242-.9208c.0047-.0694.0111-.1383.0106-.2078v-.1226c-.0414.06-.0818.1204-.1272.1798a5.359 5.359 0 0 1-.4615.5248zm0-2.1844c-.0386.0392-.0733.079-.112.1176a5.219 5.219 0 0 1-.5954.4845 5.1321 5.1321 0 0 1-.6513.392 5.3472 5.3472 0 0 1-2.125.5702v1.4955a4.5732 4.5732 0 0 0 2.8979-1.253c.0448-.0431.084-.0873.1266-.131a4.5972 4.5972 0 0 0 .4441-.5254 3.5712 3.5712 0 0 0 .3512-.6026 2.7198 2.7198 0 0 0 .242-.9208c.0047-.0694.0111-.139.0106-.2078v-.1232c-.0414.0604-.0818.121-.1272.1803a5.359 5.359 0 0 1-.4615.5248z"/></svg>
+    <div style="margin: 8;  text-align: center;">
+      <h1>BenOS</h1>
+      <p style="text-align: center; margin: 0">
+        An Operating System / Showcase
+        <br />
+        Developed by 2008wbbv
+      </p>
+      <div style="width: 100%; justify-content: center; display: flex; align-items: center;">
+        <p onclick="closeElement(document.getElementById('welcome'))"
+          style="text-align: center; width: fit-content; padding: 8px 16px; border-radius: 24px; color: blue; cursor: pointer; border: 1px solid transparent; transition: border-color 0.3s ease; margin-bottom: 0px;"
+          onmouseover="this.style.borderColor = 'blue';" onmouseout="this.style.borderColor = 'transparent';">
+          Make go away
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+  <script>
+    var selectedIcon = null
+    var topIndex = 3
+    var awaitingResponse = false
+    function sendMessage() {
+      if (!awaitingResponse) {
+        var messageContent = document.getElementById("messageInput").value
+        // Create a new <p> element
+        var paragraph = document.createElement('p');
+
+        // Set the text content of the <p> element
+        paragraph.textContent = messageContent
+
+
+        // Find the target div by its ID
+        var targetDiv = document.getElementById('chat');
+        paragraph.classList.add("my_message")
+
+        // Append the <p> element to the target div
+        targetDiv.appendChild(paragraph);
+        awaitingResponse = true
+        sendf(messageContent)
+
+
+      }
+
+    }
+    function toggleMusic() {
+      var video = 
+document.getElementById("videoElement");
+      var musicToggle = document.getElementById("musicToggle");
+
+      if (video.muted) {
+        video.muted = false;
+        video.style.display = "block";
+        video.play(); // Play the video
+        musicToggle.textContent = "Mute Music";
+      } else {
+        video.muted = true;
+        video.style.display = "none";
+        musicToggle.textContent = "Play Music";
+      }
+    }
+
+
+
+
+    function tapWindow(elmnt) {
+      elmnt.style.zIndex = topIndex++;
+    }
+
+    function openIcon(name) {
+      if (selectedIcon == document.getElementById(name + "Icon")) {
+        openElement(document.getElementById(name))
+        map.invalidateSize()
+        selectedIcon = null
+        document.getElementById(name + "Icon").style.backgroundColor = "rgba(85, 166, 241, 0.0)";
+        dragElement(document.getElementById(name));
+
+      } else {
+        if (selectedIcon) {
+          selectedIcon.style.backgroundColor = "rgba(85, 166, 241, 0.0)"
+        }
+        selectedIcon = document.getElementById(name + "Icon")
+        document.getElementById(name + "Icon").style.backgroundColor = "rgba(85, 166, 241, 0.6)";
+
+
+
+        selectedIcon = document.getElementById(name + "Icon")
+        document.getElementById(name + "Icon").style.backgroundColor = "rgba(85, 166, 241, 0.6)";
+      }
+    }
+
+    function openElement(elmnt) {
+
+      elmnt.style.display = 'flex';
+      elmnt.style.zIndex = topIndex++;
+
+    }
+    function closeElement(elmnt) {
+      elmnt.style.display = 'none'
+    }
+
+    // Make the DIV element draggable:
+    dragElement(document.getElementById("welcome"));
+   
+
+    function dragElement(elmnt) {
+      var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      if (document.getElementById(elmnt.id + "handle")) {
+        // if present, the header is where you move the DIV from:
+        document.getElementById(elmnt.id + "handle").onmousedown = dragMouseDown;
+      } else {
+        // otherwise, move the DIV from anywhere inside the DIV:
+        elmnt.onmousedown = dragMouseDown;
+      }
+
+      function getAge() {
+        const currentDate = new Date();
+        const targetDate = new Date("2008-10-22"); // Replace with your target date in the format "YYYY-MM-DD"
+        const differenceMs = currentDate - targetDate;
+        const millisecondsPerYear = 365.25 * 24 * 60 * 60 * 1000;
+        const yearsWithDecimals = (differenceMs / millisecondsPerYear).toFixed(5);
+        document.getElementById("age").textContent = yearsWithDecimals
+        console.log("age here")
+      }
+      getAge()
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      }
+
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.zIndex = topIndex++;
+
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+    function setDate() {
+      var timeElement = document.getElementById("time");
+      timeElement.innerText = new Date().toLocaleString();
+      setTimeout(setDate, 1000); // Update the time every second
+    }
+
+    setDate();
+
+
+    function sendSMS(messageBody) {
+      const accountSid = 'AC9577eec75abf5558561b6195bd6add94';
+      const authToken = '424412b787024b505738f6703a158d50';
+      const fromPhoneNumber = '+18336100199';
+      const toPhoneNumber = '+8577075696';
+
+      fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${btoa(`${accountSid}:${authToken}`)}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          From: fromPhoneNumber,
+          To: toPhoneNumber,
+          Body: messageBody
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    }
+
+  </script>
+  <div id="music" onclick="tapWindow(document.getElementById('music'))"
+    style="align-items: center; border: 1px solid black; border-radius: 16px; background-color: #fff; width: 500px; position: absolute; justify-content: center; flex-direction: column; display: none">
+    <div id="music"
+      style="display: flex; align-items: center; background-color: #F6F6F6; border-radius: 16px 16px 0px 0px; justify-content: space-between; width: 100%">
+      <div onclick="closeElement(document.getElementById('music'))"
+        style="cursor: pointer; height: 16px; width: 16px; background-color: red; border-radius: 16px; margin-left: 16px">
+      </div>
+      <p>Apple Music</p>
+
+        <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="270px" style="width:100%;max-width:270px;overflow:hidden;border-radius:100px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/playlist/narcissist/pl.u-38oWXB8tY6ygEAz"></iframe>
+        
+      </div>
+    </div>
+    <div style="font-family: Courier; width: calc(100% - 32px);">
+
+
+      
+    </div>
+  </div>
+</body>
+
+</html>
